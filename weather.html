@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Weather Website</title>
+  <link rel="stylesheet" href="weather.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+</head>
+<body >
+<div class="backimg"></div>
+    
+    <div class="container">
+        <h1>Weather Forecast</h1>
+        <div class="search">
+            <input type="text" id="city" placeholder="Enter city name">
+            <button><img src="search.png" alt="error"></button>
+        </div>
+        <div class="weather">
+            <img src="images/rain.png" class="weather-icon">
+            <h1 class="temp">20°c</h1>
+            <h2 class="city">Kathamndu</h2>
+            <p class="date">December 22, 2023</p>
+            <div class="details">
+                <div class="col">
+                    <img src="images/humidity.png">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="images/wind.png">
+                    <div>
+                        <p class="wind">15 km/h</p>
+                        <p>Wind Speed</p>
+                    </div>
+            </div>          
+        </div>
+        <div class="pre">
+            <div class="col">
+                <img src="images/pre.png">
+                <div>
+                    <p class="pressure">1017 hPa</p>
+                    <p>Pressure</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const apiKey = "868f28d7fefbd205413b8706cb04001c";
+    const apiUrl="https://api.openweathermap.org/data/2.5/weather";
+
+    const searchBox = document.querySelector(".search input");
+    const searchBtn = document.querySelector(".search button");
+    const weatherIcon = document.querySelector(".weather-icon");
+    const back = document.querySelector(".backimg");
+    
+    async function checkWeather(city){
+        const response = await fetch(`${apiUrl}?q=${city}&units=metric&appid=${apiKey}`);
+        var data = await response.json();
+        const currentDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        });
+
+        console.log(data);
+        const { name } = data;
+
+        document.querySelector(".city").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML = Math.round(data.main.temp) +"°c";
+        document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+        document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
+        document.querySelector(".pressure").innerHTML = data.main.pressure + " hPa";
+        document.querySelector(".date").innerHTML = currentDate;
+        const backgroundImageUrl = `https://source.unsplash.com/1600x900/?landscape?${city}`;
+        document.body.style.backgroundImage = `url('${backgroundImageUrl}')`;
+        if (data.weather[0].main == "Clouds"){
+            
+            weatherIcon.src = "images/clouds.png";
+        }
+        else if (data.weather[0].main == "Clear"){
+            
+            weatherIcon.src = "images/clear.png";
+        }
+        else if (data.checkWeather[0].main == "Rain"){
+            
+            weatherIcon.src = "images/rain.png";
+        }
+        else if (data.weather[0].main == "Drizzle"){
+            weatherIcon.src = "images/drizzle.png";
+        }
+        else if (data.weather[0].main == "Mist"){
+            weatherIcon.src = "images/mist.png";
+        }
+        document.querySelector(".weather").style.display = "block"
+
+
+
+    }
+
+searchBtn.addEventListener("click", ()=>{
+    checkWeather(searchBox.value);
+})
+
+
+</script>
+</body>
+</html>
